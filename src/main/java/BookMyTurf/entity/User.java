@@ -1,4 +1,3 @@
-
 package BookMyTurf.entity;
 
 import java.time.LocalDateTime;
@@ -46,28 +45,82 @@ public class User {
 
     private LocalDateTime updatedAt;
 
-    // Manual getters because Eclipse is not recognizing Lombok getters
 
-    public Role getRole() {
-        return role;
+    public Long getId()
+    {
+        return id;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public String getEmail() {
+    public String getEmail()
+    {
         return email;
     }
 
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public String getPhone() 
+    {
+        return phone;
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public Role getRole() 
+    {
+        return role;
+    }
+
+    public void setName(String name) 
+    {
+        this.name = name;
+    }
+
+    public void setEmail(String email) 
+    {
+        this.email = email;
+    }
+
+    public void setPassword(String password) 
+    {
+        this.password = password;
+    }
+
+    public void setPhone(String phone) 
+    {
+        this.phone = phone;
+    }
+
+    public void setStatus(String status) 
+    {
+        this.status = status;
+    }
+
+    public void setRole(Role role)
+    {
+        this.role = role;
+    }
+
     @PrePersist
-    protected void onCreate() {
+    protected void onCreate()
+    {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
-    protected void onUpdate() {
+    protected void onUpdate()
+    {
         updatedAt = LocalDateTime.now();
     }
 }

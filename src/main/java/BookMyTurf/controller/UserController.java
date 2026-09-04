@@ -2,13 +2,19 @@ package BookMyTurf.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import BookMyTurf.dto.UserRequestDTO;
+import BookMyTurf.dto.UserResponseDTO;
+import BookMyTurf.entity.Role;
 import BookMyTurf.entity.User;
+import BookMyTurf.repository.RoleRepository;
 import BookMyTurf.service.UserService;
 
 @RestController
@@ -17,27 +23,61 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final RoleRepository roleRepository;
+
+    public UserController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public UserResponseDTO createUser(
+            @Valid @RequestBody UserRequestDTO userRequestDTO) {
 
-        System.out.println("NAME = " + user.getName());
-        System.out.println("EMAIL = " + user.getEmail());
+        User user = new User();
 
-        System.out.println("ROLE OBJECT = " + user.getRole());
+        user.setName(userRequestDTO.getName());
+        user.setEmail(userRequestDTO.getEmail());
+        user.setPassword(userRequestDTO.getPassword());
+        user.setPhone(userRequestDTO.getPhone());
 
-        if (user.getRole() != null) {
-            System.out.println("ROLE ID = " + user.getRole().getId());
-        }
+        Role role = roleRepository.findById(userRequestDTO.getRoleId())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
 
-        return userService.saveUser(user);
+        user.setRole(role);
+
+        User savedUser = userService.saveUser(user);
+
+        UserResponseDTO response = new UserResponseDTO();
+
+        response.setId(savedUser.getId());
+        response.setName(savedUser.getName());
+        response.setEmail(savedUser.getEmail());
+        response.setPhone(savedUser.getPhone());
+        response.setStatus(savedUser.getStatus());
+        response.setRoleId(savedUser.getRole().getId());
+
+        return response;
     }
-
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserResponseDTO> getAllUsers() {
+
+        List<User> users = userService.getAllUsers();
+
+        return users.stream()
+                .map(user -> {
+                    UserResponseDTO response = new UserResponseDTO();
+
+                    response.setId(user.getId());
+                    response.setName(user.getName());
+                    response.setEmail(user.getEmail());
+                    response.setPhone(user.getPhone());
+                    response.setStatus(user.getStatus());
+                    response.setRoleId(user.getRole().getId());
+
+                    return response;
+                })
+                .toList();
+    
     }
-}
+    }
