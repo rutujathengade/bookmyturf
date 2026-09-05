@@ -11,5 +11,4 @@ public class BookmyturfApplication
 	{
 		SpringApplication.run(BookmyturfApplication.class, args);
 	}
-
 }
