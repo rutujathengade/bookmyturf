@@ -1,5 +1,6 @@
 package BookMyTurf.exception;
-
+import BookMyTurf.exception.SlotNotAvailableException;
+import BookMyTurf.exception.BookingDateMismatchException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import BookMyTurf.exception.InvalidSlotTimeException;
+import BookMyTurf.exception.SlotTurfMismatchException;
 @RestControllerAdvice
 public class GlobalExceptionHandler 
 {
@@ -75,6 +77,47 @@ public class GlobalExceptionHandler
     public Map<String, String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", "Slot already exists");
+        return response;
+    }
+    
+    @ExceptionHandler(SlotNotAvailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleSlotNotAvailable(SlotNotAvailableException ex) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+
+        return response;
+    }
+    
+    @ExceptionHandler(BookingDateMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleBookingDateMismatch(
+            BookingDateMismatchException ex) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+
+        return response;
+    }
+    @ExceptionHandler(SlotTurfMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleSlotTurfMismatch(
+            SlotTurfMismatchException ex) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+
+        return response;
+    }
+    
+    @ExceptionHandler(BookingAlreadyCancelledException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleBookingAlreadyCancelled(
+            BookingAlreadyCancelledException ex) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
         return response;
     }
 }
